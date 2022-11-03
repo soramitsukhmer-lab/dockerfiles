@@ -138,4 +138,4 @@ RUN echo "# Web Platform Metadata" > /etc/WEB_PLATFORM_METADATA \
 # See rootfs/etc/gomplate/templates/config.env
 ENV NBC_PLATFORM_ENV=local
 ENV NBC_PLATFORM_VERSION=X.X.X-untagged
-ENV BACKEND_ADDR=${API_BASE_URL}
+ENV BACKEND_ADDR=http://backend:8765
