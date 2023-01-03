@@ -25,7 +25,8 @@ RUN echo "Install dependencies" \
     ; yarn cache clean
 
 # RUN --mount=type=secret,id=github_pkg_token \
-#     echo "Install dependencies" \
+#     set -e \
+#     ; echo "Install dependencies" \
 #     ; npm config set "//npm.pkg.github.com/:_authToken" "$(cat /run/secrets/github_pkg_token)" \
 #     ; yarn install \
 #     ; yarn cache clean \
