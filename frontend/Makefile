@@ -53,7 +53,6 @@ run:
 bash:
 	@echo Running ${DOCKER_IMAGE_TAG} image on port http://localhost:8088
 	@docker run -it --rm \
-		--env SATELLITE_CONFIG_PATH=/satellite.hcl \
 		--publish 8088:80 \
 		${DOCKER_IMAGE_TAG} \
 		/bin/sh
