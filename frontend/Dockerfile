@@ -1,5 +1,5 @@
 ARG NODE_VERSION=18-alpine
-FROM --platform=$BUILDPLATFORM node:${NODE_VERSION} AS builder
+FROM harbor.sorakh.io/frontend/frontend-buildpack-nodejs:${NODE_VERSION} AS builder
 
 # Set working directory
 RUN mkdir -p /builder/{src,dist}
@@ -12,18 +12,40 @@ ARG DOCKER_META_IMAGES= \
 # Install dependencies and build application
 RUN --mount=type=secret,id=GH_SORAMITSUKHMER_BOT_PAT \
     --mount=type=bind,target=.,readwrite=true \
+    --mount=type=cache,target=/usr/local/share/.cache/yarn/v6 \
 <<EOF
     set -aeou pipefail
     CI=1
     CYPRESS_INSTALL_BINARY=0
-    npm config set "//npm.pkg.github.com/:_authToken" "$(cat /run/secrets/GH_SORAMITSUKHMER_BOT_PAT)"
+    GITHUB_TOKEN="$(cat /run/secrets/GH_SORAMITSUKHMER_BOT_PAT)"
+    echo "Yiiii"
+    yarn cache dir
     yarn install --frozen-lockfile
     if ! `yarn run browserslist | grep "caniuse-lite is outdated"`; then
         npx browserslist@latest --update-db
     fi
-    npm config delete "//npm.pkg.github.com/:_authToken"
     yarn build --dest /builder/dist
     npx generate-license-file --input package.json --output /builder/dist/third-party-licenses.txt
 EOF
 
-# WIP
+FROM harbor.sorakh.io/frontend/frontend-runtime-static:stable-alpine
+
+# Copy the application from builder stage
+COPY --from=builder /builder/dist /var/www/public
+
+# Transfer project rootfs
+ADD rootfs /
+
+# Web Platform Metadata
+COPY <<-EOT /etc/WEB_PLATFORM_METADATA
+    # Web Platform Metadata
+    WEB_PLATFORM_VERSION=${DOCKER_META_VERSION}
+EOT
+
+# Webenv runtime environment
+#
+# This variables used by gomplate template renderer
+# See rootfs/etc/gomplate/templates/config.env
+ENV NBC_PLATFORM_ENV=local \
+    NBC_PLATFORM_VERSION=X.X.X-untagged
+
