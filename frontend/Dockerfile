@@ -12,7 +12,7 @@ ARG DOCKER_META_IMAGES \
 # Install dependencies and build application
 RUN --mount=type=secret,id=GH_SORAMITSUKHMER_BOT_PAT \
     --mount=type=bind,target=.,readwrite=true \
-    --mount=type=cache,target=/usr/local/share/.cache/yarn/v6,mode=777 \
+    --mount=type=cache,target=./node_modules \
 <<EOF
     set -aeou pipefail
     CI=1
