@@ -18,8 +18,6 @@ RUN --mount=type=secret,id=GH_SORAMITSUKHMER_BOT_PAT \
     CI=1
     CYPRESS_INSTALL_BINARY=0
     GITHUB_TOKEN="$(cat /run/secrets/GH_SORAMITSUKHMER_BOT_PAT)"
-    echo "Yiiii"
-    yarn cache dir
     yarn install --frozen-lockfile
     if ! `yarn run browserslist | grep "caniuse-lite is outdated"`; then
         npx browserslist@latest --update-db
