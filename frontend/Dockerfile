@@ -1,5 +1,5 @@
-ARG NODE_IMAGE=node:18-alpine
-FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS builder
+ARG NODE_VERSION=18-alpine
+FROM --platform=$BUILDPLATFORM node:${NODE_VERSION} AS builder
 
 # Set working directory
 RUN mkdir -p /builder/{src,dist}
