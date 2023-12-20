@@ -6,13 +6,12 @@ RUN mkdir -p /builder/{src,dist}
 WORKDIR /builder/src
 
 # Docker Metadata Actions
-ARG DOCKER_META_IMAGES \
-    DOCKER_META_VERSION
+ARG DOCKER_META_IMAGES= \
+    DOCKER_META_VERSION=
 
 # Install dependencies and build application
 RUN --mount=type=secret,id=GH_SORAMITSUKHMER_BOT_PAT \
     --mount=type=bind,target=.,readwrite=true \
-    --mount=type=cache,target=./node_modules \
 <<EOF
     set -aeou pipefail
     CI=1
